@@ -76,7 +76,7 @@ class StreamManager: NSObject {
         //        nativePlayer?.advanceToNextItem()
         
         self.currItem = item
-        nativePlayer?.removeAllItems()
+        //nativePlayer?.removeAllItems()
         nativePlayer?.insertItem(AVPlayerItem(URL: NSURL(string: item.url!)!), afterItem: nil)
         nativePlayer?.play()
         
@@ -153,6 +153,7 @@ class StreamManager: NSObject {
     
     func stop() {
         nativePlayer?.pause()
+        nativePlayer?.replaceCurrentItemWithPlayerItem(nil)
         youtubePlayerView?.stopVideo()
     }
     
