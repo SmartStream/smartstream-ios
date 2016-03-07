@@ -64,6 +64,7 @@ class StreamManager: NSObject {
     func playYoutubeItem(item: StreamItem!) {
         print("[MANAGER] play YoutubeItem")
         dispatch_async(dispatch_get_main_queue(),{
+            self.currItem = item
             self.youtubePlayerView?.loadWithVideoId(item.id!, playerVars: self.youtubePlayerVars)
         })
     }
@@ -73,8 +74,12 @@ class StreamManager: NSObject {
         //        let currItem = nativePlayer?.currentItem
         //        nativePlayer?.insertItem(AVPlayerItem(URL: NSURL(string: item.url!)!), afterItem: currItem)
         //        nativePlayer?.advanceToNextItem()
+        
+        self.currItem = item
+        nativePlayer?.removeAllItems()
         nativePlayer?.insertItem(AVPlayerItem(URL: NSURL(string: item.url!)!), afterItem: nil)
         nativePlayer?.play()
+        
     }
     
     override init() {
@@ -122,7 +127,6 @@ class StreamManager: NSObject {
         let extractor = item!.extractor
         print("[MANAGER] extractor = \(extractor!); id = \(item!.id!)")
         
-        currItem = item
         if extractor == "youtube" {
             playerContainerView?.bringSubviewToFront(youtubePlayerView!)
             playYoutubeItem(item)
@@ -142,9 +146,14 @@ class StreamManager: NSObject {
         }
     }
     
-    func stop() {
+    func pause() {
         nativePlayer?.pause()
         youtubePlayerView?.pauseVideo()
+    }
+    
+    func stop() {
+        nativePlayer?.pause()
+        youtubePlayerView?.stopVideo()
     }
     
     func next() {

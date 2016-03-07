@@ -36,7 +36,7 @@ class PlayerViewController: UIViewController {
     }
     
     @IBAction func onStopTapped(sender: AnyObject) {
-        self.streamManager.stop()
+        self.streamManager.pause()
     }
     
     @IBAction func onNextTapped(sender: AnyObject) {
