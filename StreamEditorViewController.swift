@@ -25,8 +25,9 @@ class StreamEditorViewController: UIViewController, UITableViewDataSource {
     
     func uiSetup() {
         searchWrapperView.backgroundColor = Theme.Colors.BackgroundColor.color
-        searchTextField.font = Theme.Fonts.LightNormalTypeFace.font
-        searchTextField.textColor = Theme.Colors.HighlightColor.color 
+        searchTextField.font = Theme.Fonts.TitleThinTypeFace.font
+        searchTextField.textColor = Theme.Colors.HighlightColor.color
+        searchTextField.attributedPlaceholder = NSAttributedString(string: "Create Stream", attributes: [NSForegroundColorAttributeName: Theme.Colors.HighlightLightColor.color])
     }
     
     override func didReceiveMemoryWarning() {
