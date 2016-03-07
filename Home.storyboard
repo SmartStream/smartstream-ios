@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PQj-LS-H9R" userLabel="Menu View">
-                                <rect key="frame" x="0.0" y="20" width="600" height="580"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d8I-3F-vLl">
@@ -32,13 +32,13 @@
                         </subviews>
                         <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="PQj-LS-H9R" firstAttribute="top" secondItem="tfr-da-zVB" secondAttribute="top" id="9cD-of-UB3"/>
                             <constraint firstItem="EET-5A-dmX" firstAttribute="top" secondItem="d8I-3F-vLl" secondAttribute="bottom" id="Lqz-iN-lR5"/>
                             <constraint firstItem="d8I-3F-vLl" firstAttribute="width" secondItem="tfr-da-zVB" secondAttribute="width" id="VGm-VJ-bzL"/>
                             <constraint firstItem="EET-5A-dmX" firstAttribute="top" secondItem="PQj-LS-H9R" secondAttribute="bottom" id="YLn-Be-sKs"/>
                             <constraint firstItem="d8I-3F-vLl" firstAttribute="top" secondItem="tfr-da-zVB" secondAttribute="top" id="dZ4-5L-Nti"/>
                             <constraint firstItem="PQj-LS-H9R" firstAttribute="leading" secondItem="tfr-da-zVB" secondAttribute="leading" id="eM1-ho-2Qp"/>
                             <constraint firstItem="d8I-3F-vLl" firstAttribute="leading" secondItem="tfr-da-zVB" secondAttribute="leading" id="tHC-7a-iHY"/>
-                            <constraint firstItem="PQj-LS-H9R" firstAttribute="top" secondItem="oFQ-jX-cQ8" secondAttribute="bottom" id="xHT-yH-AgS"/>
                             <constraint firstAttribute="trailing" secondItem="PQj-LS-H9R" secondAttribute="trailing" id="zEY-1a-oQq"/>
                         </constraints>
                     </view>

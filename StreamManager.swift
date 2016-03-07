@@ -60,18 +60,15 @@ class StreamManager: NSObject {
         }
     }
     
-    func setupAVPlayer() {
+    override init() {
+        super.init()
+        
         self.nativePlayer = AVQueuePlayer()
         self.nativePlayer!.addObserver(self, forKeyPath: "status", options: [.New,.Old,.Initial], context: self.myContext)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "nativePlayerDidFinishPlaying:", name: AVPlayerItemDidPlayToEndTimeNotification, object: nil)
         self.nativePlayerLayer = AVPlayerLayer(player: self.nativePlayer)
         
         NSNotificationCenter.defaultCenter().addObserverForName(ItemDidEndNotification, object: nil, queue: NSOperationQueue.mainQueue(), usingBlock: processItemEndEvent)
-    }
-    
-    override init() {
-        super.init()
-        setupAVPlayer()
     }
     
     deinit {
