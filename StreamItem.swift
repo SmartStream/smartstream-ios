@@ -34,6 +34,13 @@ class StreamItem: NSObject, Comparable {
     }
 }
 
+// ==========================================================
+// Note: for now the items are ordered based on their 
+//       timestamps but this can easily be modified to look at 
+//       the priority field first (when there is one), so they
+//       would be ordered based on priorities. And only look
+//       at the timestamp for tie-breaker.
+// ==========================================================
 func < (lhs: StreamItem, rhs: StreamItem) -> Bool {
     return lhs.timestamp < rhs.timestamp
 }
