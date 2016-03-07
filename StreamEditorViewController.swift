@@ -81,10 +81,9 @@ class StreamEditorViewController: UIViewController, UITableViewDataSource, UITab
     }
     
     @IBAction func onBackTapped(sender: AnyObject) {
-//        dismissViewControllerAnimated(true) { () -> Void in
-//            self.delegate?.didSetStreamKeywords(self.keywords)
-//        }
-        self.editing = !self.editing
+        dismissViewControllerAnimated(true) { () -> Void in
+            self.delegate?.didSetStreamKeywords(self.keywords)
+        }
     }
     
     @IBAction func onKeywordTapped(sender: AnyObject) {
