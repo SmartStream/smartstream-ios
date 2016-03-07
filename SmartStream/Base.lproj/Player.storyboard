@@ -18,10 +18,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WeQ-Ok-9nI">
-                                <rect key="frame" x="0.0" y="20" width="600" height="344"/>
+                                <rect key="frame" x="0.0" y="20" width="600" height="580"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Loading..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9wo-oD-DVQ">
-                                        <rect key="frame" x="263" y="162" width="75" height="20.5"/>
+                                        <rect key="frame" x="263" y="280" width="75" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
@@ -89,7 +89,7 @@
                         <constraints>
                             <constraint firstItem="WeQ-Ok-9nI" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="46P-Gl-MCf"/>
                             <constraint firstAttribute="trailing" secondItem="Ix1-YS-Lcv" secondAttribute="trailing" id="4LZ-0b-82g"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="WeQ-Ok-9nI" secondAttribute="bottom" constant="236" id="Ds2-g3-sCv"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="WeQ-Ok-9nI" secondAttribute="bottom" id="Ds2-g3-sCv"/>
                             <constraint firstAttribute="trailing" secondItem="WeQ-Ok-9nI" secondAttribute="trailing" id="JcE-aX-9MW"/>
                             <constraint firstItem="WeQ-Ok-9nI" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="QfX-Hc-Y6O"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Ix1-YS-Lcv" secondAttribute="bottom" id="kY4-pD-4o5"/>

@@ -15,27 +15,15 @@ class StreamManager: NSObject {
     let ItemDidEndNotification = "com.smartu.streammanager.itemDidEnd"
     let ItemDidEndKey = "com.smartu.streammanager.itemDidEndKey"
     
-    let youtubePlayerVars : [NSObject : AnyObject] = [ "playsinline": 1 , "autoplay" : 1 ]
+    let youtubePlayerVars : [NSObject : AnyObject] = [
+        "playsinline": 1 ,
+        "controls": 0,
+        "enablejsapi": 1,
+        "autohide": 1,
+        "autoplay" : 0,
+        "modestbranding" : 1
+    ]
     let myContext = UnsafeMutablePointer<()>()
-    
-    var currItem: StreamItem?
-    var priorityQueue: PriorityQueue<StreamItem>?
-    var stream: Stream? {
-        didSet {
-            if stream == nil || stream!.items.count == 0 {return}
-            priorityQueue = PriorityQueue(ascending: true, startingValues: stream!.items)
-            
-            // Autoplay
-            playNextItem()
-        }
-    }
-    
-    func appendStream(stream: Stream?) {
-        if stream == nil || stream!.items.count == 0 {return}
-        for item in stream!.items {
-            priorityQueue?.push(item)
-        }
-    }
     
     var nativePlayer: AVQueuePlayer?
     var nativePlayerLayer: AVPlayerLayer?
@@ -43,7 +31,10 @@ class StreamManager: NSObject {
     var youtubePlayerView: YTPlayerView?
     var webView: UIView?
     
-    // Option 1: native player
+    var priorityQueue: PriorityQueue<StreamItem>?
+    var currItem: StreamItem?
+    var timeObserver: AnyObject?
+    
     var playerContainerView: UIView? {
         didSet {
             if playerContainerView == nil {return}
@@ -60,32 +51,25 @@ class StreamManager: NSObject {
         }
     }
     
-    override init() {
-        super.init()
-        
-        self.nativePlayer = AVQueuePlayer()
-        self.nativePlayer!.addObserver(self, forKeyPath: "status", options: [.New,.Old,.Initial], context: self.myContext)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "nativePlayerDidFinishPlaying:", name: AVPlayerItemDidPlayToEndTimeNotification, object: nil)
-        self.nativePlayerLayer = AVPlayerLayer(player: self.nativePlayer)
-        
-        NSNotificationCenter.defaultCenter().addObserverForName(ItemDidEndNotification, object: nil, queue: NSOperationQueue.mainQueue(), usingBlock: processItemEndEvent)
+    var stream: Stream? {
+        didSet {
+            if stream == nil || stream!.items.count == 0 {return}
+            priorityQueue = PriorityQueue(ascending: true, startingValues: stream!.items)
+            
+            // Autoplay
+            playNextItem()
+        }
     }
-    
-    deinit {
-        self.nativePlayer?.pause()
-        self.nativePlayer?.removeObserver(self, forKeyPath: "status")
-    }
-    
     
     func playYoutubeItem(item: StreamItem!) {
-        print("playYoutubeItem")
+        print("[MANAGER] play YoutubeItem")
         dispatch_async(dispatch_get_main_queue(),{
             self.youtubePlayerView?.loadWithVideoId(item.id!, playerVars: self.youtubePlayerVars)
         })
     }
     
     func playNativeItem(item: StreamItem!) {
-        print("playNativeItem")
+        print("[MANAGER] play nativeItem")
         //        let currItem = nativePlayer?.currentItem
         //        nativePlayer?.insertItem(AVPlayerItem(URL: NSURL(string: item.url!)!), afterItem: currItem)
         //        nativePlayer?.advanceToNextItem()
@@ -93,12 +77,50 @@ class StreamManager: NSObject {
         nativePlayer?.play()
     }
     
+    override init() {
+        super.init()
+        
+        self.nativePlayer = AVQueuePlayer()
+        self.nativePlayer!.addObserver(self, forKeyPath: "status", options: [.New], context: self.myContext)
+        self.nativePlayer!.addObserver(self, forKeyPath: "duration", options: [.New], context: self.myContext)
+        self.nativePlayer!.addObserver(self, forKeyPath: "loadedTimeRanges", options: [.New], context: self.myContext)
+        self.nativePlayer!.addObserver(self, forKeyPath: "presentationSize", options: [.New], context: self.myContext)
+        self.nativePlayer!.addObserver(self, forKeyPath: "error", options: [.New], context: self.myContext)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "nativePlayerDidFinishPlaying:", name: AVPlayerItemDidPlayToEndTimeNotification, object: nil)
+        self.nativePlayerLayer = AVPlayerLayer(player: self.nativePlayer)
+        self.nativePlayerLayer!.videoGravity = AVLayerVideoGravityResizeAspect
+        
+        NSNotificationCenter.defaultCenter().addObserverForName(ItemDidEndNotification, object: nil, queue: NSOperationQueue.mainQueue(), usingBlock: processItemEndEvent)
+        
+        // an observer for every second playback
+        timeObserver = nativePlayer!.addPeriodicTimeObserverForInterval(CMTimeMake(1,1), queue: nil, usingBlock: { (time: CMTime) -> Void in
+            if self.nativePlayer != nil && self.nativePlayer!.currentItem != nil {
+                let currentSecond = self.nativePlayer!.currentItem!.currentTime().value / Int64(self.nativePlayer!.currentItem!.currentTime().timescale)
+                let totalDuration = String(format: "%.2f", CMTimeGetSeconds(self.nativePlayer!.currentItem!.duration))
+                print("[NATIVEPLAYER] progress: \(currentSecond) / \(totalDuration) secs")
+            }
+        })
+    }
+    
+    deinit {
+        stop()
+        if timeObserver != nil {
+            nativePlayer?.removeTimeObserver(timeObserver!)
+        }
+        self.nativePlayer?.removeObserver(self, forKeyPath: "status")
+        self.nativePlayer?.removeObserver(self, forKeyPath: "duration")
+        self.nativePlayer?.removeObserver(self, forKeyPath: "loadedTimeRanges")
+        self.nativePlayer?.removeObserver(self, forKeyPath: "presentationSize")
+        self.nativePlayer?.removeObserver(self, forKeyPath: "error")
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
     func playNextItem() {
         let item = priorityQueue!.pop()
         if item == nil {return}
         
         let extractor = item!.extractor
-        print("extractor = \(extractor!); id = \(item!.id!)")
+        print("[MANAGER] extractor = \(extractor!); id = \(item!.id!)")
         
         currItem = item
         if extractor == "youtube" {
@@ -122,7 +144,7 @@ class StreamManager: NSObject {
     
     func stop() {
         nativePlayer?.pause()
-        youtubePlayerView?.stopVideo()
+        youtubePlayerView?.pauseVideo()
     }
     
     func next() {
@@ -135,9 +157,10 @@ class StreamManager: NSObject {
     }
     
     func processItemEndEvent(notification: NSNotification) -> Void {
-        print("processItemEndEvent")
+        print("[MANAGER] processItemEndEvent")
         playNextItem()
     }
+    
 }
 
 
@@ -147,10 +170,8 @@ class StreamManager: NSObject {
 extension StreamManager {
     
     func nativePlayerDidFinishPlaying(notification: NSNotification) {
-        if let nativePlayer = self.nativePlayer {
-            if nativePlayer.rate != 0 && nativePlayer.error == nil {
-                notifyItemDidEnd()
-            }
+        if nativePlayer?.rate != 0 && nativePlayer?.error == nil {
+            notifyItemDidEnd()
         }
     }
     
@@ -161,19 +182,33 @@ extension StreamManager {
         
         if keyPath == "status" {
             if nativePlayer!.status == AVPlayerStatus.ReadyToPlay {
-                print("nativePlayer: ready to play")
+                print("[NATIVEPLAYER] ready to play")
                 
-                let currentPlayerAsset = nativePlayer?.currentItem?.asset as? AVURLAsset
+                let currentPlayerAsset = nativePlayer!.currentItem?.asset as? AVURLAsset
                 if currentPlayerAsset != nil {
-                    if currItem != nil && currItem!.url == currentPlayerAsset?.URL.path {
-                        nativePlayer?.play()
+                    if currItem != nil && currItem!.url == currentPlayerAsset!.URL.absoluteString {
+                        dispatch_async(dispatch_get_main_queue(),{
+                            self.nativePlayerLayer?.layoutIfNeeded()
+                            self.nativePlayer?.play()
+                        })
                     }
                 }
             } else if nativePlayer!.status == AVPlayerStatus.Failed {
-                print("nativePlayer: failed to play")
+                print("[NATIVEPLAYER] failed to play")
             } else {
-                print("nativePlayer: unhandled playerItem status \(nativePlayer!.status)")
+                print("[NATIVEPLAYER] unhandled playerItem status \(nativePlayer!.status)")
             }
+        } else if keyPath == "duration" {
+            
+        } else if keyPath == "loadedTimeRanges" {
+            if let timeInterval = nativePlayer!.currentItem?.duration {
+                let totalDuration = CMTimeGetSeconds(timeInterval)
+                print("totalDuration = \(totalDuration)")
+            }
+        } else if keyPath == "presentationSize" {
+            
+        } else if keyPath == "error" {
+            
         }
     }
     
@@ -186,16 +221,34 @@ extension StreamManager {
 extension StreamManager: YTPlayerViewDelegate {
     
     func playerViewDidBecomeReady(playerView: YTPlayerView!) {
-        print("youtubePlayer: playerViewDidBecomeReady")
+        print("[YOUTUBEPLAYER] playerViewDidBecomeReady")
         self.youtubePlayerView?.playVideo()
     }
     
     func playerView(playerView: YTPlayerView!, didChangeToState state: YTPlayerState) {
-        print("youtubePlayer: didChangeToState \(state.rawValue)")
+        print("[YOUTUBEPLAYER] didChangeToState \(state.rawValue)")
         if state == .Ended {
-            print("youtubePlayer: video ended")
+            print("[YOUTUBEPLAYER] video ended")
             notifyItemDidEnd()
         }
+    }
+    
+    func playerView(playerView: YTPlayerView!, didChangeToQuality quality: YTPlaybackQuality) {
+        print("[YOUTUBEPLAYER] didChangeToQuality \(quality.rawValue)")
+    }
+    
+    func playerView(playerView: YTPlayerView!, didPlayTime playTime: Float) {
+        let currentSecond = String(format: "%.2f", playTime)
+        let totalDuration = String(format: "%.2f", playerView.duration())
+        print("[YOUTUBEPLAYER] progress: \(currentSecond) / \(totalDuration) secs")
+    }
+    
+    func playerView(playerView: YTPlayerView!, receivedError error: YTPlayerError) {
+        print("[YOUTUBEPLAYER] didPlayTime \(error.rawValue)")
+    }
+    
+    func playerViewPreferredWebViewBackgroundColor(playerView: YTPlayerView!) -> UIColor! {
+        return UIColor.whiteColor()
     }
 }
 
