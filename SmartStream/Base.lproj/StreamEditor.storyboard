@@ -72,10 +72,12 @@
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
+                                        <gestureRecognizers/>
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>
                                     <outlet property="dataSource" destination="BRQ-9W-LhL" id="zgE-OY-KJM"/>
+                                    <outlet property="delegate" destination="BRQ-9W-LhL" id="6oL-m1-dNs"/>
                                 </connections>
                             </tableView>
                         </subviews>

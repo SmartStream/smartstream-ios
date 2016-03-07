@@ -8,13 +8,19 @@
 
 import UIKit
 
-class StreamEditorViewController: UIViewController, UITableViewDataSource {
+protocol StreamEditorViewControllerDelegate: class {
+    func didSetStreamKeywords(keywords:[String])
+}
+
+class StreamEditorViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     @IBOutlet var searchWrapperView: UIView!
     @IBOutlet var searchTextField: UITextField!
     @IBOutlet var tableView: UITableView!
     
     private var keywords:[String] = []
+    
+    weak var delegate: StreamEditorViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,21 +46,51 @@ class StreamEditorViewController: UIViewController, UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let longpressGesture = UILongPressGestureRecognizer(target: self, action: "onLongPress:")
         let cell = tableView.dequeueReusableCellWithIdentifier("StreamEditorCell", forIndexPath: indexPath)
         cell.textLabel?.text = keywords[indexPath.row]
+        cell.addGestureRecognizer(longpressGesture)
         return cell
     }
     
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        searchTextField.resignFirstResponder()
+    }
+    
+    func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
+        return UITableViewCellEditingStyle.None
+    }
+    
+    func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return true
+    }
+    
+    func tableView(tableView: UITableView, shouldIndentWhileEditingRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return false
+    }
+    
+    func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
+        let moveItem = keywords[sourceIndexPath.row]
+        keywords.removeAtIndex(sourceIndexPath.row)
+        keywords.insert(moveItem, atIndex: destinationIndexPath.row)
+        tableView.setEditing(false, animated: true)
+    }
+    
+    func onLongPress(sender: UILongPressGestureRecognizer) {
+        tableView.setEditing(true, animated: true)
+    }
+    
     @IBAction func onBackTapped(sender: AnyObject) {
-        dismissViewControllerAnimated(true) { () -> Void in
-            //
-        }
+//        dismissViewControllerAnimated(true) { () -> Void in
+//            self.delegate?.didSetStreamKeywords(self.keywords)
+//        }
+        self.editing = !self.editing
     }
     
     @IBAction func onKeywordTapped(sender: AnyObject) {
         if let keyword = searchTextField.text {
             if keyword != "" {
-                keywords.append(keyword)
+                keywords.insert(keyword, atIndex: 0)
                 searchTextField.text = ""
                 tableView.reloadData()
             }
