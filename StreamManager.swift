@@ -30,20 +30,11 @@ class StreamManager: NSObject {
         }
     }
     
-    func playYoutubeItem(item: StreamItem!) {
-        print("playYoutubeItem")
-        dispatch_async(dispatch_get_main_queue(),{
-            self.youtubePlayerView?.loadWithVideoId(item.id!, playerVars: self.youtubePlayerVars)
-        })
-    }
-    
-    func playNativeItem(item: StreamItem!) {
-        print("playNativeItem")
-//        let currItem = nativePlayer?.currentItem
-//        nativePlayer?.insertItem(AVPlayerItem(URL: NSURL(string: item.url!)!), afterItem: currItem)
-//        nativePlayer?.advanceToNextItem()
-        nativePlayer?.insertItem(AVPlayerItem(URL: NSURL(string: item.url!)!), afterItem: nil)
-        nativePlayer?.play()
+    func appendStream(stream: Stream?) {
+        if stream == nil || stream!.items.count == 0 {return}
+        for item in stream!.items {
+            priorityQueue?.push(item)
+        }
     }
     
     var nativePlayer: AVQueuePlayer?
@@ -86,6 +77,23 @@ class StreamManager: NSObject {
     deinit {
         self.nativePlayer?.pause()
         self.nativePlayer?.removeObserver(self, forKeyPath: "status")
+    }
+    
+    
+    func playYoutubeItem(item: StreamItem!) {
+        print("playYoutubeItem")
+        dispatch_async(dispatch_get_main_queue(),{
+            self.youtubePlayerView?.loadWithVideoId(item.id!, playerVars: self.youtubePlayerVars)
+        })
+    }
+    
+    func playNativeItem(item: StreamItem!) {
+        print("playNativeItem")
+        //        let currItem = nativePlayer?.currentItem
+        //        nativePlayer?.insertItem(AVPlayerItem(URL: NSURL(string: item.url!)!), afterItem: currItem)
+        //        nativePlayer?.advanceToNextItem()
+        nativePlayer?.insertItem(AVPlayerItem(URL: NSURL(string: item.url!)!), afterItem: nil)
+        nativePlayer?.play()
     }
     
     func playNextItem() {
@@ -142,8 +150,10 @@ class StreamManager: NSObject {
 extension StreamManager {
     
     func nativePlayerDidFinishPlaying(notification: NSNotification) {
-        if nativePlayer?.rate != 0 && nativePlayer?.error == nil {
-            notifyItemDidEnd()
+        if let nativePlayer = self.nativePlayer {
+            if nativePlayer.rate != 0 && nativePlayer.error == nil {
+                notifyItemDidEnd()
+            }
         }
     }
     
