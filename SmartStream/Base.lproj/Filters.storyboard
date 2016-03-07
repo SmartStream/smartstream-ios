@@ -22,6 +22,7 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
                                     <outlet property="dataSource" destination="WEb-Ji-Ael" id="bYx-MA-Rbd"/>
+                                    <outlet property="delegate" destination="WEb-Ji-Ael" id="FyE-Z5-bBz"/>
                                 </connections>
                             </tableView>
                         </subviews>

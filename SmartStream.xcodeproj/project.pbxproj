@@ -43,6 +43,8 @@
 		A2F231E81C8D22060053956D /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2F231E71C8D22060053956D /* Theme.swift */; };
 		A2F231EE1C8D69D10053956D /* FilterSwitchCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A2F231ED1C8D69D10053956D /* FilterSwitchCell.xib */; };
 		A2F231F01C8D6AB20053956D /* FilterSwitchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2F231EF1C8D6AB20053956D /* FilterSwitchCell.swift */; };
+		A2F231F31C8D7A590053956D /* FilterSelectCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2F231F21C8D7A590053956D /* FilterSelectCell.swift */; };
+		A2F231F51C8D7A670053956D /* FilterSelectCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A2F231F41C8D7A670053956D /* FilterSelectCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -86,6 +88,8 @@
 		A2F231E71C8D22060053956D /* Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		A2F231ED1C8D69D10053956D /* FilterSwitchCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FilterSwitchCell.xib; sourceTree = "<group>"; };
 		A2F231EF1C8D6AB20053956D /* FilterSwitchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterSwitchCell.swift; sourceTree = "<group>"; };
+		A2F231F21C8D7A590053956D /* FilterSelectCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterSelectCell.swift; sourceTree = "<group>"; };
+		A2F231F41C8D7A670053956D /* FilterSelectCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FilterSelectCell.xib; sourceTree = "<group>"; };
 		A30B156E768D52458EFC335F /* Pods-SmartStream.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmartStream.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SmartStream/Pods-SmartStream.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -318,6 +322,7 @@
 		A2F231E91C8D69730053956D /* FilterTableViewCell */ = {
 			isa = PBXGroup;
 			children = (
+				A2F231F11C8D7A370053956D /* FilterSelectCell */,
 				A2F231EA1C8D69880053956D /* FilterSwitchCell */,
 			);
 			name = FilterTableViewCell;
@@ -330,6 +335,15 @@
 				A2F231ED1C8D69D10053956D /* FilterSwitchCell.xib */,
 			);
 			name = FilterSwitchCell;
+			sourceTree = "<group>";
+		};
+		A2F231F11C8D7A370053956D /* FilterSelectCell */ = {
+			isa = PBXGroup;
+			children = (
+				A2F231F21C8D7A590053956D /* FilterSelectCell.swift */,
+				A2F231F41C8D7A670053956D /* FilterSelectCell.xib */,
+			);
+			name = FilterSelectCell;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -405,6 +419,7 @@
 				A2A3A3D51C8AD9A300D1173C /* Explore.storyboard in Resources */,
 				A2F231EE1C8D69D10053956D /* FilterSwitchCell.xib in Resources */,
 				492D027A1C8BC6A6000AAF17 /* Menu.storyboard in Resources */,
+				A2F231F51C8D7A670053956D /* FilterSelectCell.xib in Resources */,
 				A2A3A3DD1C8AE1C200D1173C /* Home.storyboard in Resources */,
 				0B597B561C844AD900D4AC57 /* Login.storyboard in Resources */,
 				A2A3A3DB1C8AD9E500D1173C /* Filters.storyboard in Resources */,
@@ -475,6 +490,7 @@
 				0B2CD8AA1C8844C60055BD50 /* StreamClient.swift in Sources */,
 				A2A3A3CE1C8AD90400D1173C /* ExploreViewController.swift in Sources */,
 				492D02A21C8BE997000AAF17 /* ProfileViewController.swift in Sources */,
+				A2F231F31C8D7A590053956D /* FilterSelectCell.swift in Sources */,
 				A2A3A3CC1C8AD8D600D1173C /* StreamEditorViewController.swift in Sources */,
 				A2F231F01C8D6AB20053956D /* FilterSwitchCell.swift in Sources */,
 				A2F231E81C8D22060053956D /* Theme.swift in Sources */,

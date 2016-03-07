@@ -30,10 +30,11 @@ class StreamEditorViewController: UIViewController, UITableViewDataSource, UITab
     }
     
     func uiSetup() {
-        searchWrapperView.backgroundColor = Theme.Colors.BackgroundColor.color
+        searchWrapperView.backgroundColor = Theme.Colors.DarkBackgroundColor.color
         searchTextField.font = Theme.Fonts.TitleThinTypeFace.font
         searchTextField.textColor = Theme.Colors.HighlightColor.color
         searchTextField.attributedPlaceholder = NSAttributedString(string: "Create Stream", attributes: [NSForegroundColorAttributeName: Theme.Colors.HighlightLightColor.color])
+        tableView.backgroundColor = Theme.Colors.BackgroundColor.color
     }
     
     override func didReceiveMemoryWarning() {
@@ -49,7 +50,11 @@ class StreamEditorViewController: UIViewController, UITableViewDataSource, UITab
         let longpressGesture = UILongPressGestureRecognizer(target: self, action: "onLongPress:")
         let cell = tableView.dequeueReusableCellWithIdentifier("StreamEditorCell", forIndexPath: indexPath)
         cell.textLabel?.text = keywords[indexPath.row]
+        cell.textLabel?.font = Theme.Fonts.LightNormalTypeFace.font
+        cell.textLabel?.textColor = Theme.Colors.HighlightColor.color
         cell.addGestureRecognizer(longpressGesture)
+        cell.backgroundColor = UIColor.clearColor()
+        cell.selectionStyle = UITableViewCellSelectionStyle.None
         return cell
     }
     
