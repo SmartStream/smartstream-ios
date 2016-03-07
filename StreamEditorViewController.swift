@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol StreamEditorViewControllerDelegate: class {
+protocol StreamEditorDelegate: class {
     func didSetStreamKeywords(keywords:[String])
 }
 
@@ -20,7 +20,7 @@ class StreamEditorViewController: UIViewController, UITableViewDataSource, UITab
     
     private var keywords:[String] = []
     
-    weak var delegate: StreamEditorViewControllerDelegate?
+    weak var delegate: StreamEditorDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -81,8 +81,8 @@ class StreamEditorViewController: UIViewController, UITableViewDataSource, UITab
     }
     
     @IBAction func onBackTapped(sender: AnyObject) {
+        delegate?.didSetStreamKeywords(self.keywords)
         dismissViewControllerAnimated(true) { () -> Void in
-            self.delegate?.didSetStreamKeywords(self.keywords)
         }
     }
     
